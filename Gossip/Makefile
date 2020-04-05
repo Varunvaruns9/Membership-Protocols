@@ -7,7 +7,7 @@
 #* 
 #***********************
 
-CFLAGS =  -Wall -g -std=c++11
+CFLAGS =  -Wall -g -std=c++11 -w
 
 all: Application
 

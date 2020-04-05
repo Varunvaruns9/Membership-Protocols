@@ -20,6 +20,7 @@
  */
 #define TREMOVE 20
 #define TFAIL 5
+#define NGOSSIPS 2
 
 /*
  * Note: You can change/add any functions in MP1Node.{h,cpp}
@@ -31,7 +32,7 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
-    DUMMYLASTMSGTYPE
+    HBEAT,
 };
 
 /**
