@@ -31,7 +31,7 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
-    DUMMYLASTMSGTYPE
+    HBEAT,
 };
 
 /**
