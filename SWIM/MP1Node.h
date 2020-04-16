@@ -18,8 +18,9 @@
 /**
  * Macros
  */
-#define TREMOVE 20
-#define TFAIL 5
+#define TREMOVE 6
+#define TPING 2
+#define FORWARD_PINGERS 3
 
 /*
  * Note: You can change/add any functions in MP1Node.{h,cpp}
@@ -31,8 +32,17 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
-    DUMMYLASTMSGTYPE
+    PING,
+    ACK,
+    PING_REQ,
 };
+
+/** 
+ * Messages format
+ * PING: MsgType + Pinger.Address + PayloadSize + Payload
+ * ACK: MsgType + Acker.Address + Dest.Address + PayloadSize + Payload
+ * PING-REQ: MsgType + Pinger.Address + Dest.Address + PayloadSize + Payload
+ */
 
 /**
  * STRUCT NAME: MessageHdr
@@ -42,6 +52,29 @@ enum MsgTypes{
 typedef struct MessageHdr {
 	enum MsgTypes msgType;
 }MessageHdr;
+
+/**
+ * CLASS NAME: PayloadMember
+ *
+ * DESCRIPTION: Class for storing entries that are piggybacked with messages.
+ */
+class PayloadMember: public MemberListEntry {
+public:
+	// true if Newly added active node; false if failed node.
+	bool status;
+	PayloadMember(MemberListEntry mem, bool status)
+	{
+		this->id = mem.id;
+		this->port = mem.port;
+		this->heartbeat = mem.heartbeat;
+		this->timestamp = mem.timestamp;
+		this->status = status;
+	}
+	PayloadMember() : MemberListEntry()
+	{
+		this->status = 0;
+	}
+};
 
 /**
  * CLASS NAME: MP1Node
@@ -54,6 +87,8 @@ private:
 	Log *log;
 	Params *par;
 	Member *memberNode;
+	vector<PayloadMember> payload;
+	vector<MemberListEntry>::iterator checkPos;
 	char NULLADDR[6];
 
 public:
@@ -75,6 +110,11 @@ public:
 	Address getJoinAddress();
 	void initMemberListTable(Member *memberNode);
 	void printAddress(Address *addr);
+	void refreshPayload();
+	vector<PayloadMember>::iterator findPayload(PayloadMember pay);
+	vector<MemberListEntry>::iterator findMember(MemberListEntry mem);
+	void updateLists(char *curr);
+	void pushPayload(char *msg);
 	virtual ~MP1Node();
 };
 
