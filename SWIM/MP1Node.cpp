@@ -550,7 +550,7 @@ bool MP1Node::recvCallBack(void *env, char *data, int size ) {
         updateLists(curr);
 
         // Send PING message to the dest
-        emulNet->ENsend(&(node->addr), &pinger, (char *)msgHead, msgsize);
+        emulNet->ENsend(&(node->addr), &dest, (char *)msgHead, msgsize);
 
         free(msgHead);
     }
